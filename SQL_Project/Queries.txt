@@ -1,0 +1,68 @@
+Q1.
+
+SELECT Count(*), 
+       G.NAME 
+FROM   artist AS A1, 
+       album AS A2, 
+       track AS T, 
+       genre AS G 
+WHERE  A1.artistid = A2.artistid 
+       AND A2.albumid = T.albumid 
+       AND T.genreid = G.genreid 
+GROUP  BY G.NAME; 
+
+Q2.
+
+SELECT   a1.NAME, 
+         a2.title, 
+         t.NAME, 
+         t.milliseconds 
+FROM     track  AS t 
+JOIN     album  AS a2 
+JOIN     artist AS a1 
+ON       a1.artistid=a2.artistid 
+AND      a2.albumid=t.albumid 
+where    t.milliseconds IS NOT NULL 
+ORDER BY t.milliseconds DESC limit 5;
+
+and
+
+SELECT a1.NAME, 
+       a2.title, 
+       t.NAME, 
+       Max(t.milliseconds) 
+FROM   track  AS t 
+JOIN   album  AS a2 
+JOIN   artist AS a1 
+ON     a1.artistid=a2.artistid 
+AND    a2.albumid=t.albumid;
+
+Q3.
+
+SELECT E.firstname AS Employee_Name, 
+       E.birthdate AS DoB, 
+       CASE 
+         WHEN Date(E.birthdate, '+' 
+                                || Strftime('%Y', 'now') - 
+                                   Strftime('%Y', E.birthdate) 
+                                || ' years') >= Date('now') THEN 
+         Strftime('%Y', 'now') - Strftime('%Y', E.birthdate) 
+         ELSE Strftime('%Y', 'now') - Strftime('%Y', E.birthdate) - 1 
+       END         AS Age 
+FROM   employee AS E 
+       JOIN customer AS C 
+         ON C.supportrepid = E.employeeid; 
+
+Q4.
+
+SELECT Sum(I.unitprice * I.quantity) AS Track_Sales, 
+       A1.NAME 
+FROM   invoiceline AS I, 
+       track AS T, 
+       album AS A2, 
+       artist AS A1 
+WHERE  I.trackid = T.trackid 
+       AND T.albumid = A2.albumid 
+       AND A1.artistid = A2.artistid 
+GROUP  BY A1.NAME 
+ORDER  BY Sum(I.unitprice * I.quantity) DESC; 
